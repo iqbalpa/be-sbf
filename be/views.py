@@ -99,14 +99,47 @@ class Detail(APIView):
         
 
     def delete(self, request, id):
-        pass
         # TODO FALEN cari id, hapus kalo ada, handle kalo gaada
-        
+        try:
+            film = Film.objects.get(id=id)
+            film.delete()
+            message = f"berhasil menghapus film dengan id {id}"
+            return Response({
+                "message" : message
+            })
+        except Film.DoesNotExist:
+            error_message = f"tidak ada film dengan id {id}"
+            return Response({
+                "error" : error_message
+            })
 
 class Like(APIView):
     def put(self, request, id, event):
-        pass
         # TODO FALEN cari id, like/dislike, handle kalo gaada
-        
+        try:
+            film = Film.objects.get(id=id)
+        except Film.DoesNotExist:
+            error_message = f"tidak ada film dengan id {id}"
+            return Response({
+                "error" : error_message
+            })
 
-        # serialize, send response
+        message = 'berhasil menambahkan '
+        if event == 'like':
+            film.like += 1
+            message += 'like'
+        elif event == 'dislike':
+            film.dislike += 1
+            message += 'dislike'
+        else:
+            return Response({
+                "status" : 404,
+                "error" : "url tidak ditemukan"
+            })
+        film.save()
+
+        # send response
+        return Response({
+            "status" : 200,
+            "message" : message,
+        })
