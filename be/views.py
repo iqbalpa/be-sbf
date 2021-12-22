@@ -38,7 +38,6 @@ class Showcase(APIView):
                 return Response({
                     "status" : 400,
                     "message" : f"Film dengan judul {judul} sudah ada di daftar",
-                    "data": serializers.data,
                 })
 
         # TODO IQBAL bikin objek film kalau belum ada
@@ -55,7 +54,6 @@ class Showcase(APIView):
         return Response({
             "status" : 200,
             "message" : "berhasil menambahkan film",
-            "data": serializers.data,
         })
              
         
