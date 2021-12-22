@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import filters, generics
 from .serializers import FilmDetailSerializer, FilmSerializer
 from .models import Film
+from django.shortcuts import render
 
 # Create your views here.
 class Showcase(APIView):
@@ -27,13 +28,36 @@ class Showcase(APIView):
         })
             
     def post(self,request):
-        pass
+        films = Film.objects.all()
+
         # TODO IQBAL cek kalau title udah ada di model
-        
+        judul = request.data['title']
+        for film in films:
+            if judul == film.title:
+                serializers = FilmSerializer(films, many=True)
+                return Response({
+                    "status" : 400,
+                    "message" : f"Film dengan judul {judul} sudah ada di daftar",
+                    "data": serializers.data,
+                })
+
         # TODO IQBAL bikin objek film kalau belum ada
-
+        new_film = Film.objects.create(
+            title = request.data['title'],
+            poster = request.data['poster'],
+            trailer = request.data['trailer'],
+            genre = request.data['genre'],
+            year_released = request.data['year_released']
+        )
+        
         # serialize, kirim response
-
+        serializers = FilmSerializer(film, many=True)
+        return Response({
+            "status" : 200,
+            "message" : "berhasil menambahkan film",
+            "data": serializers.data,
+        })
+             
         
 class Search(APIView):
     def get(self, request, title):
