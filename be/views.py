@@ -59,7 +59,13 @@ class Showcase(APIView):
         
 class Search(APIView):
     def get(self, request, title):
-        film = Film.objects.filter(title = title)
+        try:
+            film = Film.objects.filter(title = title)
+        except Film.DoesNotExist:
+            error_message = f"tidak ada film dengan judul {title}"
+            return Response({
+                "error": error_message
+            })
         # TODO BALQIS tarik data yang difilter dari nama
 
         # TODO SWAS sorting
