@@ -59,7 +59,9 @@ class Showcase(APIView):
         
 class Search(APIView):
     def get(self, request, title):
-        pass
+        self.request= request
+        self.title = title
+        film = Film.objects.filter(attr_1 = title)
         # TODO BALQIS tarik data yang difilter dari nama
         film = None
 
